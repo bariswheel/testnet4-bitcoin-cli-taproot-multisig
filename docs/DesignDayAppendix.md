@@ -171,15 +171,16 @@ flowchart TB
   classDef data fill:#fff7ed,stroke:#ea580c,color:#9a3412
   classDef risk fill:#ffebee,stroke:#c62828,color:#8e0000
 
-  subgraph Wallets/Services
-    WO[Watch-Only Wallet\n(no private keys)]:::role
-    SW1[Signer Wallet A\n(user device)]:::role
-    SW2[Signer Wallet B\n(hardware)]:::role
-    BK[Backup/Inheritance Service\n(3rd key)]:::role
+  subgraph Wallets_And_Services["Wallets / Services"]
+    WO["Watch-Only Wallet\n(no private keys)"]:::role
+    SW1["Signer Wallet A\n(user device)"]:::role
+    SW2["Signer Wallet B\n(hardware)"]:::role
+    BK["Backup/Inheritance Service\n(3rd key)"]:::role
   end
 
-  DESC[Descriptor(s)\n(tr(internal, multi_a(2,X1,X2,X3)))]:::data
-  UTXO[UTXO set & addresses]:::data
+  DESC["Descriptor(s)\ntr(internal, multi_a(2,X1,X2,X3))"]:::data
+  UTXO["UTXO set & addresses"]:::data
+  NET[Network]
 
   WO --> DESC
   WO --> UTXO
@@ -187,9 +188,9 @@ flowchart TB
   SW1 -->|Signs| WO
   WO -->|Requests 2nd sig| SW2
   SW2 -->|Signs| WO
-  WO -->|Finalizes + Broadcasts| NET[Network]
+  WO -->|Finalizes + Broadcasts| NET
 
-  BK -. emergency cosigner .-> WO
+  BK -. "emergency cosigner" .-> WO
   class BK risk
 ```
 ### F) Friction Map (Where beginners get stuck)
