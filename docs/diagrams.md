@@ -183,3 +183,100 @@ flowchart TB
   CORE --- WATCH
   CORE --- SIGN
 ```
+
+
+## Contrasting Karpathy’s (ECDSA, single-sig) with This Project (Taproot/Schnorr, 2-of-3 miniscript, key-path possible).
+
+Quick recap
+
+- Curve: both use secp256k1: y^2 \equiv x^3 + 7 \pmod p over a finite field.
+- Karpathy 2021: ECDSA signatures, single-sig P2PKH/P2WPKH-style model (no Taproot).
+- This project here: Schnorr signatures (BIP340) inside Taproot (BIP341/342) with miniscript 2-of-3 (script-path) and optional key-path (single x-only internal key).
+- Multisig:
+  - Legacy ECDSA multisig = multiple pubkeys & sigs visible in script; bulky, reveals M-of-N.
+  - Taproot/Schnorr supports key aggregation (MuSig2) → 1 pubkey + 1 sig on chain (privacy/size), or miniscript script-path when needed.
+
+
+## 8. ECDSA Single-Sig (Karpathy-blog-style) – flow
+```mermaid
+flowchart LR
+  subgraph Wallet["Wallet (ECDSA)"]
+    P["Privkey (secp256k1)"]
+    Q["Pubkey Q = k·G"]
+    ADDR["Address (e.g. P2WPKH) = HASH160(Q)"]
+  end
+
+  TXIN["TX Input (references UTXO)"]
+  MSG["msg = sighash(TX)"]
+  SIG["ECDSA sig (r,s)"]
+  VERIFY["Node verifies: ECDSA_verify(Q, msg, r,s)"]
+
+  P --> Q --> ADDR
+  ADDR --> TXIN
+  TXIN --> MSG --> SIG --> VERIFY
+```
+## 9. Taproot Single-Sig (Schnorr, key-path) – flow
+```mermaid
+flowchart LR
+  %% Put the two worlds side-by-side
+  subgraph Taproot["Taproot Schnorr MuSig2<br/>(key aggregation)<br/><br/>"]
+    T1["Off-chain combine N pubkeys → 1 aggregated pubkey"]
+    T2["Co-sign → 1 Schnorr signature"]
+    T3["On-chain looks like single-sig<br/>(1 pubkey, 1 signature)"]
+  end
+
+  subgraph Legacy["Legacy ECDSA Multisig<br/>(on-chain M-of-N)<br/><br/>"]
+    L1["Script lists N pubkeys"]
+    L2["Spend reveals M signatures"]
+    L3["Large transaction size<br/>Reveals policy on-chain"]
+  end
+
+  %% Keep flows internal to each subgraph to prevent layout collisions
+  T1 --> T2 --> T3
+  L1 --> L2 --> L3
+```
+## 10. Multisig: ECDSA legacy vs Schnorr MuSig2 (concept)
+```mermaid
+flowchart LR
+  DESC["Descriptor:\ntr(internal, multi_a(2, X1,X2,X3))"]
+  BRANCH1["Key-path (optional)\nSchnorr with internal (or agg) key"]
+  BRANCH2["Script-path (your demo)\n2 of X1,X2,X3 signatures"]
+
+  DESC --> BRANCH1
+  DESC --> BRANCH2
+```
+## 11. Taproot Miniscript 2-of-3 (this build) – script-path spend
+```mermaid
+sequenceDiagram
+  autonumber
+  participant W as Wallet (builder)
+  participant S as Signer
+  participant N as Network
+
+  Note over W: Build inputs/outputs → PSBT
+  W->>S: PSBT (base64)
+
+  par ECDSA flow
+    S->>S: create ECDSA (r,s) for each input
+  and Schnorr flow
+    S->>S: create Schnorr (R,s) for each input
+  end
+
+  S-->>W: partially signed PSBT
+  W->>W: finalize (hex tx)
+  W->>N: broadcast
+```
+## 12. PSBT signing differences (ECDSA vs Schnorr)
+```mermaid
+flowchart TB
+  A["ECDSA legacy multisig"] -->|"reveals M-of-N,\nN pubkeys,\nM signatures"| AC[On-chain data]
+  B["Taproot key-path (MuSig2)"] -->|"looks single-sig:\n1 pubkey, 1 sig"| BC[On-chain data]
+  C["Taproot script-path 2-of-3"] -->|"reveals only spent branch\n(2 keys + script)"| CC[On-chain data]
+```
+## 13. Visual cheat: where data is revealed on-chain
+```mermaid
+flowchart TB
+  A["ECDSA legacy multisig"] -->|"reveals M-of-N,\nN pubkeys,\nM signatures"| AC[On-chain data]
+  B["Taproot key-path (MuSig2)"] -->|"looks single-sig:\n1 pubkey, 1 sig"| BC[On-chain data]
+  C["Taproot script-path 2-of-3"] -->|"reveals only spent branch\n(2 keys + script)"| CC[On-chain data]
+```
