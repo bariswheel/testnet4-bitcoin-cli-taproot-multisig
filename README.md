@@ -127,6 +127,7 @@ Each script has its own README for detailed instructions.
 ### Faucet Notes
 
 - Some faucets required GitHub login.  
-- Not all worked reliably — patience needed for confirmations.  
+- Not all worked reliably — patience needed for confirmations. 
+- https://faucet.testnet4.dev/ - this one worked as intended! only once every 24 hours 
 
 ---
