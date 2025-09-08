@@ -25,15 +25,14 @@ When something feels off:
 
 ## 1) Multiple Users & Cookie Auth
 
-Symptom:
+**Symptom:**
 bitcoin-cli ... getblockhash 0 →
 Could not locate RPC credentials. No authentication cookie could be found...
 
-Why:
+**Why:**
 bitcoind writes a cookie file under the active datadir (.../testnet4/.cookie). The cookie is only readable by the user that runs the daemon (here: bitcoin). If you run bitcoin-cli as a different user, the CLI can’t read the cookie — as opposed to transparent auth when users match.
 
-*Detect*
+**Detect**
     ```bash
     whoami
     ls -la /srv/bitcoin-testnet/testnet4/.cookie
-    
