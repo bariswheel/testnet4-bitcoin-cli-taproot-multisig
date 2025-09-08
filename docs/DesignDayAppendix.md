@@ -52,7 +52,7 @@ while staying true to decentralization, self-sovereignty, resilience, adversaria
 
 ## 5. How to Contribute in Design Day
 
-- Bring your background in **Google-scale UX research & user journeys**.  
+- Incorporate background in **Google-scale UX research & user journeys**.  
 - Ask: *Where would mom get stuck?* (e.g., faucet login failures → imagine Coinbase off-ramp friction).  
 - Sketch: "From faucet to PSBT" is analogous to "From paycheck to secure savings."  
 - Pair technical concepts (UTXOs, PSBT, descriptors) with **user metaphors** (piggy banks, safes, shared signatures).
