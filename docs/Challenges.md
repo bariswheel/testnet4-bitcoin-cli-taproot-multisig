@@ -23,16 +23,32 @@ When something feels off:
     bitcoin-cli -datadir=/srv/bitcoin-testnet -conf=/srv/bitcoin-testnet/bitcoin.conf -getinfo
     bitcoin-cli -datadir=/srv/bitcoin-testnet -conf=/srv/bitcoin-testnet/bitcoin.conf getblockchaininfo | jq '.blocks,.headers'
 
-## 1) Multiple Users & Cookie Auth
+1) Multiple Users & Cookie Auth
 
-**Symptom:**
+Symptom:
 bitcoin-cli ... getblockhash 0 →
 Could not locate RPC credentials. No authentication cookie could be found...
 
-**Why:**
+Why:
 bitcoind writes a cookie file under the active datadir (.../testnet4/.cookie). The cookie is only readable by the user that runs the daemon (here: bitcoin). If you run bitcoin-cli as a different user, the CLI can’t read the cookie — as opposed to transparent auth when users match.
 
-**Detect**
-    ```bash
-    whoami
-    ls -la /srv/bitcoin-testnet/testnet4/.cookie
+Detect:
+
+whoami
+ls -la /srv/bitcoin-testnet/testnet4/.cookie
+
+Fix: 
+
+Run CLI as the same user:
+
+sudo -u bitcoin bitcoin-cli -datadir=/srv/bitcoin-testnet -conf=/srv/bitcoin-testnet/bitcoin.conf getblockhash 0
+
+or open an interactive shell:
+
+sudo -iu bitcoin
+
+2) sudo -u vs sudo -iu
+	•	sudo -u bitcoin <cmd>: run one command as bitcoin (stay in current shell), as opposed to switching shells.
+	•	sudo -iu bitcoin: open an interactive login shell for bitcoin (new $HOME, new environment).
+
+Gotcha: Shell variables you set before won’t exist in the new login shell unless you export or re-define them (e.g., BCLI, MSCLI). Put exports into ~/.bashrc for persistence.
