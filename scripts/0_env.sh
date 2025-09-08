@@ -25,3 +25,28 @@ export MSCLI="bitcoin-cli -datadir=$DATADIR -conf=$CONF -rpcwallet=alice-2of3"
 echo "[info] chain check: $(bitcoin-cli -datadir=$DATADIR -conf=$CONF getblockhash 0)"
 echo "[info] signer wallet: $($BCLI getwalletinfo | jq '{name,descriptor,private_keys_enabled}')"
 echo "[info] policy  wallet: $($MSCLI getwalletinfo | jq '{name,descriptor,private_keys_enabled}')"
+
+
+# --------------------------------------------------------------------------------------------------
+# 00_env.sh — Environment Bootstrap
+#
+# What
+# Sets up environment variables (`BCLI` and `MSCLI`) to make Bitcoin Core CLI usage easier.
+#
+# Why
+# Typing out `bitcoin-cli -datadir=... -conf=... -rpcwallet=...` every time is repetitive and error-prone.
+# This script simplifies the workflow and ensures consistency.
+#
+# How
+# - Defines `DATADIR` and `CONF`.
+# - Exports `BCLI` (Alice signer wallet).
+# - Exports `MSCLI` (Alice 2-of-3 policy/watch-only wallet).
+# - Performs a quick sanity check:
+#   - Verifies you’re on Testnet4.
+#   - Prints wallet info for Alice and Alice-2of3.
+#
+# Usage
+# ```bash
+# chmod +x 00_env.sh
+# ./00_env.sh
+# ```

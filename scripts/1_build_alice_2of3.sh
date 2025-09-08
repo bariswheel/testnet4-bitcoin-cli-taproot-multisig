@@ -87,3 +87,30 @@ DESC_CHK=$DESC_CHK
 ADDR=$ADDR
 EOF
 echo "[saved] wrote .alice_vars"
+
+# --------------------------------------------------------------------------------------------------
+# 10_build_alice_2of3.sh — Build Alice’s 2-of-3 Taproot Wallet
+#
+# What
+# Creates 3 Taproot addresses, extracts x-only public keys, builds a 2-of-3 Taproot miniscript descriptor,
+# imports it into a policy wallet, and derives a usable receive address.
+#
+# Why
+# This demonstrates how to set up a Taproot-based multi-signature scheme **manually** — as opposed to
+# using a GUI wallet. Learning it by hand clarifies how descriptors, x-only keys, and PSBT flows work.
+#
+# How
+# - Generates A1, A2, A3 addresses.
+# - Extracts descriptors and pubkeys.
+# - Normalizes to x-only keys (32 bytes).
+# - Generates a random internal key (`INT`) so no single-sig key-path exists.
+# - Builds descriptor: `tr(INT, multi_a(2,X1,X2,X3))`.
+# - Appends checksum with `getdescriptorinfo`.
+# - Imports descriptor into the `alice-2of3` policy wallet.
+# - Derives a usable receive/change address (`ADDR`).
+#
+# Usage
+# ```bash
+# chmod +x 10_build_alice_2of3.sh
+# ./10_build_alice_2of3.sh
+# ```

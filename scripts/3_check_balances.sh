@@ -62,3 +62,24 @@ $BOBCLI getbalances | jq .
 
 echo "[info] Child tx (Alice -> Bob): $TXID_CHILD"
 $BCLI gettransaction "$TXID_CHILD" | jq '{amount, fee, confirmations}'
+
+# ---
+# ### `30_check_balances.sh`
+# ```markdown
+# # 30_check_balances.sh — Check Balances and Confirmations
+#
+# ## What
+# Verifies balances for Alice’s signer, Alice’s 2-of-3 watch-only, and Bob’s wallet. Also shows confirmation status for the latest child TX.
+#
+# ## Why
+# Ensures you can track how funds move across wallets and confirm transaction status.
+#
+# ## How
+# - Reads saved variables.
+# - Prints balances via `getbalances`.
+# - Checks confirmation depth of `TXID_CHILD`.
+#
+# ## Usage
+# ```bash
+# chmod +x 30_check_balances.sh
+# ./30_check_balances.sh

@@ -119,3 +119,27 @@ SEND=$SEND
 TXID_CHILD=$TXID_CHILD
 EOF
 echo "[saved] wrote .send_vars"
+
+# --------------------------------------------------------------------------------------------------
+# 20_send_from_alice_to_bob.sh — Alice Sends to Bob
+#
+# What
+# Spends funds from Alice’s 2-of-3 Taproot address to Bob’s Taproot address using a PSBT (Partially Signed Bitcoin Transaction).
+#
+# Why
+# Separates the policy (watch-only wallet) from the signer (private keys). This models real-world setups where hardware wallets and policy servers cooperate.
+#
+# How
+# 1. Creates a new Bob address.
+# 2. Finds Alice’s funded UTXO (`TXID`, `VOUT`, `AMT`).
+# 3. Decides `SEND` amount (leaves space for fees).
+# 4. Watch-only wallet (`alice-2of3`) creates the PSBT.
+# 5. Signer wallet (`alice`) signs it.
+# 6. Finalizes and broadcasts the transaction.
+# 7. Saves TXID for later checks.
+#
+# Usage
+# ```bash
+# chmod +x 20_send_from_alice_to_bob.sh
+# ./20_send_from_alice_to_bob.sh
+# ```
