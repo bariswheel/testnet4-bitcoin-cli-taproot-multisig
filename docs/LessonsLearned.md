@@ -1,5 +1,3 @@
-awesome — adding a LessonsLearned.md is exactly the kind of “do it by hand, then reflect” move that turns this from a hack into a portfolio piece. here’s a drop-in file you can paste into your repo:
-
 ⸻
 
 LessonsLearned.md
