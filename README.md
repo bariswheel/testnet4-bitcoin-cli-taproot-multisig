@@ -1,6 +1,4 @@
----
-
-# 📄 Master README.md (Study Doc)
+# Master README.md (Study Doc)
 
 ```markdown
 # Bitcoin Testnet4 Taproot 2-of-3 Multisig (Shell Scripts Walkthrough)
